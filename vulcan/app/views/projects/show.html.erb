@@ -1,0 +1,336 @@
+<h4 class="m-t-0 header-title"><%= @project.name %> Controls</h4>
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <!-- <div class="widget-simple-chart text-right card-box">
+            <div class="circliful-chart" data-dimension="90" data-text="35%" data-width="5" data-fontsize="14" data-percent="35" data-fgcolor="#7266ba" data-bgcolor="#ebeff2"></div>
+            <h3 class="text-inverse counter m-t-10">586</h3>
+            <p class="text-muted mb-0">Not Started</p>
+        </div> -->
+        <div class="widget-simple text-center card-box">
+            <h3 class="text-inverse counter font-bold mt-0"><%= get_not_started_count %></h3>
+            <p class="text-muted mb-0">Not Started</p>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="widget-simple text-center card-box">
+            <h3 class="text-primary counter font-bold mt-0"><%= get_awaiting_review_count %></h3>
+            <p class="text-muted mb-0">Awaiting Review</p>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="widget-simple text-center card-box">
+            <h3 class="text-danger font-bold mt-0"><span class="counter"><%= get_need_changes_count %></span></h3>
+            <p class="text-muted mb-0">Need Changes</p>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="widget-simple text-center card-box">
+            <h3 class="text-success counter font-bold mt-0"><%= get_approved_count %></h3>
+            <p class="text-muted mb-0">Approved</p>
+        </div>
+    </div>
+</div>
+<div class="row no-gutters">
+    <div class="col-lg-12">
+        <div class="card-box">
+            <div class="form-inline m-b-20">
+              <div class="row">
+                <div class="col-lg-6 text-center text-right">
+                  <div class="portlet">
+                      <!-- /primary heading -->
+                      <div class="portlet-heading">
+                          <% if current_user.has_role?(:vendor) %>
+                            <h3 class="portlet-title text-dark"> Controls Needing Changes </h3>
+                          <% elsif current_user.has_role?(:sponsor) %>
+                            <h3 class="portlet-title text-dark"> Controls Awaiting Approval </h3>
+                          <% end %>
+                          <div class="clearfix"></div>
+                      </div>
+                      <div id="portlet5" class="panel-collapse collapse show">
+                          <div class="portlet-body">
+                              <div style="height: 268px;">
+                                <% if current_user.has_role?(:vendor) %>
+                                  <table id="requested-changes-datatable" class="table table-striped toggle-circle m-b-0" data-page-size="4">
+                                    <thead>
+                                        <tr>
+                                            <th>Control ID</th>
+                                            <th>Impact </th>
+                                            <th>Request</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      <% @project.project_controls.group_by {|control| control.status }['Needs Changes'].each do |project_control| %>
+                                        <tr value="<%=  project_control.id %>">
+                                          <td><%= project_control.control_id %></td>
+                                          <td><%= project_control.impact %></td>
+                                          <td><%= project_control.project_control_historys.select {|history| history.control_change_status.status == 'open' && history.history_type == 'change'}.collect {|history| history.text}.join(",<br />").html_safe %></td>
+                                        </tr>
+                                      <% end unless @project.project_controls.group_by {|control| control.status }['Needs Changes'].nil? %>
+                                    </tbody>
+                                    <tfoot>
+                                      <tr class="active">
+                                          <td colspan="6">
+                                              <div class="text-right">
+                                                  <ul class="pagination justify-content-center footable-pagination"></ul>
+                                              </div>
+                                          </td>
+                                      </tr>
+                                    </tfoot>
+                                  </table>
+                                <% elsif current_user.has_role?(:sponsor) %>
+                                  <table id="awaiting-approval-datatable" class="table table-striped toggle-circle m-b-0" data-page-size="4">
+                                    <thead>
+                                        <tr>
+                                            <th>Control ID</th>
+                                            <th>Impact </th>
+                                            <th>Nist Families</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                      <% @project.project_controls.group_by {|control| control.status }['Awaiting Review'].each do |project_control| %>
+                                        <tr value="<%=  project_control.id %>">
+                                          <td><%= project_control.control_id %></td>
+                                          <td><%= project_control.impact %></td>
+                                          <td><%= project_control.nist_controls.collect {|nist| nist.family + '-' + nist.index}.join() %></td>
+                                        </tr>
+                                      <% end unless @project.project_controls.group_by {|control| control.status }['Awaiting Review'].nil?%>
+                                    </tbody>
+                                    <tfoot>
+                                      <tr class="active">
+                                          <td colspan="6">
+                                              <div class="text-right">
+                                                  <ul class="pagination justify-content-center footable-pagination"></ul>
+                                              </div>
+                                          </td>
+                                      </tr>
+                                    </tfoot>
+                                  </table>
+                                <% end %>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label class="control-label m-r-5">Applicability</label>
+                      <select id="project-controls-filter-applicability" class="form-control input-sm">
+                          <option value="Not Yet Set">Not Yet Set</option>
+                          <option value="Applicable - Configurable">Applicable - Configurable</option>
+                          <option value="Applicable - Does Not Meet">Applicable - Does Not Meet</option>
+                          <option value="Applicable - Inherently Meets">Applicable - Inherently Meets</option>
+                          <option value="Not Applicable">Not Applicable</option>
+                      </select>
+                      <input id="project-controls-search" type="text" placeholder="Search" class="form-control" autocomplete="on">
+                  </div>
+                </div>
+                <div class="col-md-6 text-center text-right">
+                  <div class="portlet">
+                      <!-- /primary heading -->
+                      <div class="portlet-heading">
+                          <h3 class="portlet-title text-dark"> Controls Applicability </h3>
+                          <div class="portlet-widgets">
+                              <a href="javascript:;" data-toggle="reload"><i class="ion-refresh"></i></a>
+                              <span class="divider"></span>
+                              <a data-toggle="collapse" data-parent="#accordion1" href="#portlet5"><i class="ion-minus-round"></i></a>
+                              <span class="divider"></span>
+                              <a href="#" data-toggle="remove"><i class="ion-close-round"></i></a>
+                          </div>
+                          <div class="clearfix"></div>
+                      </div>
+                      <div id="portlet5" class="panel-collapse collapse show">
+                          <div class="portlet-body">
+                              <div id="morris-donut-example" style="height: 200px;"></div>
+
+                              <div class="text-center">
+                                  <ul class="list-inline chart-detail-list">
+                                      <li class="list-inline-item">
+                                          <h5><i class="fa fa-circle m-r-5" style="color: #63AC56;"></i>Applicable - Configurable</h5>
+                                      </li>
+                                      <li class="list-inline-item">
+                                          <h5><i class="fa fa-circle m-r-5" style="color: #DB4B42;"></i>Applicable - Does Not Meet</h5>
+                                      </li>
+                                      <li class="list-inline-item">
+                                          <h5><i class="fa fa-circle m-r-5" style="color: #B1E6FB;"></i>Applicable - Inherently Meets</h5>
+                                      </li>
+                                      <li class="list-inline-item">
+                                          <h5><i class="fa fa-circle m-r-5" style="color: #429CF6;"></i>Not Applicable</h5>
+                                      </li>
+                                      <li class="list-inline-item">
+                                          <h5><i class="fa fa-circle m-r-5" style="color: #E9B655;"></i>Not Yet Set</h5>
+                                      </li>
+                                  </ul>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <table id="project-controls-datatable" class="table table-striped table-bordered toggle-circle m-b-0" data-page-size="7">
+                <thead>
+                    <tr>
+                        <th>Applicability</th>
+                        <th>Control ID</th>
+                        <th>Title</th>
+                        <th>Impact </th>
+                        <th>Nist Families</th>
+                    </tr>
+                </thead>
+                <!-- <div class="form-inline m-b-20">
+                    <div class="row">
+                        <div class="col-md-6 text-center text-right">
+                            <input id="project-controls-search" type="text" placeholder="Search" class="form-control" autocomplete="on">
+                        </div>
+                    </div>
+                </div> -->
+                <tbody>
+                    <% @project.project_controls.each do |project_control| %>
+                      <tr value="<%= project_control.id %>">
+                          <% if project_control.applicability.nil? %>
+                             <td><button class="btn btn-warning" >Not Yet Set</button></td>
+                          <% elsif project_control.applicability == 'Not Applicable' %>
+                             <td><button class="btn btn-primary" >Not Applicable</button></td>
+                          <% elsif project_control.applicability == 'Applicable - Configurable' %>
+                             <td><button class="btn btn-success" >Applicable - Configurable</button></td>
+                          <% elsif project_control.applicability == 'Applicable - Does Not Meet' %>
+                             <td><button class="btn btn-danger" >Applicable - Does Not Meet</button></td>
+                          <% elsif project_control.applicability == 'Applicable - Inherently Meets' %>
+                             <td><button class="btn btn-info" >Applicable - Inherently Meets</button></td>
+                          <% end %>
+                          <td><%= project_control.control_id %></td>
+                          <td><%= project_control.title %></td>
+                          <td><%= project_control.impact %></td>
+                          <td>
+                            <% project_control.nist_controls.each do |nist| %>
+                              <div class="row">
+                                <span class="badge label-table badge-success"><%= nist.family + '-' + nist.index %></span>
+                              </div>
+                            <% end %>
+                          </td>
+                      </tr>
+                    <% end %>
+                </tbody>
+                <tfoot>
+                  <tr class="active">
+                      <td colspan="6">
+                          <div class="text-right">
+                              <ul class="pagination justify-content-center footable-pagination"></ul>
+                          </div>
+                      </td>
+                  </tr>
+                </tfoot>
+            </table>
+            <script>
+              $(".pagination").rPage();
+            </script>
+        </div>
+        <%= link_to 'Back', projects_path %>
+    </div>
+</div>
+
+<div class="modal fade" id="reviewControlModal" tabindex="-1" role="dialog" aria-labelledby="reviewControlModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reviewControlModalLabel">Review Control</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="reviewModal">
+        <div id="reviewForm">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <% if current_user.has_role? :sponsor %>
+          <button type="button" class="btn btn-success">Approve Control</button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+            
+<script>
+createMorrisChart('morris-donut-example', '<%=j get_applicability_count.html_safe %>');
+
+// Add event listener for opening and closing details
+$('#project-controls-datatable td').on('click', function () {
+  
+  control_id = $(this).closest('tr').attr('value');
+  hsh = "#review_modal_card";
+  url = '/project_controls/' + control_id + '/review_control';
+  var card_holder = $(hsh);
+  if (control_id != undefined) {
+    if ($('#reviewForm').length) {
+      $('#reviewForm').empty();
+    }
+    $.ajax({
+      url: url,
+      type: "get",
+      datatype: 'json',
+      success: function(data) {
+        $('#reviewForm').append(data);
+        $('#reviewControlModal').modal();
+      },
+      error: function() {
+        console.log("Error occured");
+      }   
+    });
+  }
+});
+
+// Add event listener for opening and closing details
+$('#awaiting-approval-datatable td').on('click', function () {
+  
+  control_id = $(this).closest('tr').attr('value');
+  hsh = "#review_modal_card";
+  url = '/project_controls/' + control_id + '/review_control';
+  var card_holder = $(hsh);
+  if (control_id != undefined) {
+    if ($('#reviewForm').length) {
+      $('#reviewForm').empty();
+    }
+    $.ajax({
+      url: url,
+      type: "get",
+      datatype: 'json',
+      success: function(data) {
+        $('#reviewForm').append(data);
+        $('#reviewControlModal').modal();
+      },
+      error: function() {
+        console.log("Error occured");
+      }   
+    });
+  }
+});
+
+// Add event listener for opening and closing details
+$('#requested-changes-datatable td').on('click', function () {
+  
+  control_id = $(this).closest('tr').attr('value');
+  hsh = "#review_modal_card";
+  url = '/project_controls/' + control_id + '/review_control';
+  var card_holder = $(hsh);
+  if (control_id != undefined) {
+    if ($('#reviewForm').length) {
+      $('#reviewForm').empty();
+    }
+    $.ajax({
+      url: url,
+      type: "get",
+      datatype: 'json',
+      success: function(data) {
+        $('#reviewForm').append(data);
+        $('#reviewControlModal').modal();
+      },
+      error: function() {
+        console.log("Error occured");
+      }   
+    });
+  }
+});
+</script>
