@@ -1,0 +1,53 @@
+version: '3.5'
+
+services:
+  heimdall-web:
+    build: ./heimdall/dockerfiles/heimdall
+    volumes:
+      - heimdall_secrets:/srv/secrets
+    environment:
+      RAILS_SERVE_STATIC_FILES: "true"
+      RAILS_ENV: production
+      RAILS_RELATIVE_URL_ROOT: /heimdall
+    depends_on:
+      - heimdall-db
+
+  heimdall-db:
+    build: ./heimdall/dockerfiles/database
+    volumes:
+      - mongo_data:/data/db
+    expose:
+      - 27017
+      - 28107
+
+  vulcan-web:
+    build: ./vulcan
+    volumes:
+      - sqlite_data:/var/www/vulcan/db-data
+    environment:
+      RAILS_SERVE_STATIC_FILES: "true"
+      RAILS_ENV: production
+      RAILS_RELATIVE_URL_ROOT: /vulcan
+      RAILS_LOG_TO_STDOUT: "true"
+      SECRET_KEY_BASE: ${VULCAN_SECRET_KEY_BASE}
+      SECRET_DB_PW: ${VULCAN_SECRET_DB_PW}
+
+  terminal:
+    build: ./terminal
+    ports:
+      - 8080:8080
+
+  landing:
+    build: ./landing/
+    ports:
+      - 4000:4000
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+
+volumes:
+  mongo_data:
+  heimdall_secrets:
+  sqlite_data:
