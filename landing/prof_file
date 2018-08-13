@@ -1,0 +1,14 @@
+https://gitlab.mitre.org/inspec/cis-docker-ce-profile.git
+https://gitlab.mitre.org/inspec/inspec-docker-profile.git
+https://gitlab.mitre.org/inspec/inspec-centos7-profile.git
+https://gitlab.mitre.org/inspec/mitre-cis-linux-baseline.git
+https://gitlab.mitre.org/inspec/mitre-cis-rhel7-baseline.git
+https://gitlab.mitre.org/inspec/mitre-cis-windows2012-baseline.git
+https://gitlab.mitre.org/inspec/MITRE_Windows_Compliance.git
+https://gitlab.mitre.org/inspec/inspec-profile-disa-stig-JRE8.git
+https://gitlab.mitre.org/inspec/inspec-profile-disa-stig-JRE7.git
+https://gitlab.mitre.org/inspec/cis-aws-foundations-baseline.git
+https://gitlab.mitre.org/inspec/aws-demo-baseline.git
+https://gitlab.mitre.org/inspec/cis-kubernetes-benchmark.git
+https://gitlab.mitre.org/inspec/cis_apache_tomcat_benchmark_8.git
+https://gitlab.mitre.org/inspec/nginx-baseline.git

@@ -1,0 +1,54 @@
+# This file is a template, and might need editing before it works on your project.
+# Template project: https://gitlab.com/pages/jekyll
+# Docs: https://docs.gitlab.com/ce/pages/
+image: ruby:2.4
+
+variables:
+  JEKYLL_ENV: production
+
+# Cache gems in between builds
+cache:
+  key: jekyll-gems
+  paths:
+    - vendor/ruby
+
+
+before_script:
+  - apk update && apk add git openssh-client ca-certificates curl libressl
+  - wget -O /usr/local/share/ca-certificates/MITRE_BA_Root.crt http://pki.mitre.org/MITRE%20BA%20Root.crt
+  - wget -O /usr/local/share/ca-certificates/MITRE_BA_NPE_CA-1.crt http://pki.mitre.org/MITRE%20BA%20NPE%20CA-1.crt
+  - wget -O /usr/local/share/ca-certificates/MITRE_BA_NPE_CA-3.crt http://pki.mitre.org/MITRE%20BA%20NPE%20CA-3.crt
+  - update-ca-certificates
+
+  - mkdir -p ~/.ssh
+  - touch ~/.ssh/known_hosts
+  - echo $GITLAB_KEYSCAN >> ~/.ssh/known_hosts
+
+  - bundle install --path vendor
+  - echo 'Acquire::http::proxy "http://gatekeeper.mitre.org:80";' >> /etc/apt/apt.conf
+  - apt-get update
+  - apt-get install --yes rsync
+
+test:
+  stage: test
+  script:
+    - bundle exec jekyll build -d test
+  artifacts:
+    paths:
+      - test
+  except:
+    - master
+
+pages:
+  stage: deploy
+  script:
+    - ./create_post.sh --update prof_file
+    - bundle exec jekyll build -d public
+    - pwd
+    - rsync --delete -prulvt public /var/www/landing/
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+

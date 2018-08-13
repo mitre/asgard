@@ -1,0 +1,31 @@
+# encoding: utf-8
+#
+# This is an example of an attributes file that can be passed to the profile
+# to override the defaults of the attributes defined in each of the tests.
+# You can use this to automatically adjust your tests when using automation or
+# progromatic deployment or validation of differnt deployment patterns without
+# having to adjust the core profile.
+http_proxy_server: 'gatekeeper.mitre.org'
+http_proxy_port: '80'
+https_proxy_server: 'gatekeeper.mtire.org'
+https_proxy_port: '80'
+http_proxy_osvars: ['http','HTTP']
+https_proxy_osvars: ['https','HTTPS']
+
+clamav_conf_file: '/etc/clamd.d/clamd.conf'
+clamav_update_conf_file: '/etc/freshclam.conf'
+
+nessus_user: 'nessus'
+
+approved_ntp_servers: [
+  'time.bedford.mitre.org',
+  'time.washington.mitre.org',
+  'amazon.pool.ntp.org']
+
+login_defs_umask: '027'
+login_defs_passmaxdays_min: '90'
+login_defs_passmaxdays_max: '180'
+login_defs_passmindays: '7'
+login_defs_passwarnage: '7'
+
+sysctl_forwarding: 'false'

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body>
+    {% include header.html %}
+
+<style>
+.content {
+  min-height: 90vh;
+}
+</style>
+  
+    {{ content }}
+
+
+    <div id="footer">
+        {% include footer.html %}
+    </div>
+  </body>
+
+</html>

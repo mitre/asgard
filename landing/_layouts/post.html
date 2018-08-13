@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% include head.html %}
+
+  <body>
+    {% include header.html %}
+    
+<style>
+.content {
+  min-height: 90vh;
+}
+</style>
+    <section class="bg-gray" id="readme">
+      <div class="container content">
+        <p id="github-link">
+        <br>
+          <a href={{ page.github }}>
+            <i class="ti-github"></i>
+            Check it out on GitHub!
+          </a>
+        </p>
+        <article class="post-content">
+          {{ content }}
+        </article>
+      </div>
+    </section>
+
+    <div id="footer">
+    {% include footer.html %}
+    </div>
+
+  </body>
+
+</html>
