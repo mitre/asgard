@@ -1,0 +1,42 @@
+sync-repo:
+  stage: build
+  image: alpine:latest
+
+  # allow us to run pipelines manually online or with a CI schedule
+  only:
+    - web
+    - schedules
+
+  before_script:
+    # add the MITRE certificates to the docker image
+    - apk update && apk add git openssh-client ca-certificates
+    - wget -O /usr/local/share/ca-certificates/MITRE_BA_Root.crt $CRT_R
+    - wget -O /usr/local/share/ca-certificates/MITRE_BA_NPE_CA-1.crt $CRT_1
+    - wget -O /usr/local/share/ca-certificates/MITRE_BA_NPE_CA-3.crt $CRT_3
+    - update-ca-certificates
+
+    # create a file called push_key that contains the $GITLAB_PUSH_KEY
+    - mkdir -p /root/.ssh
+    - echo "$GITLAB_PUSH_KEY" > ~/push_key
+    - chmod 600 ~/push_key
+
+    # configure git
+    - git config --global user.email 'deployer@mitre.org' # Normally this is associated with the $GITLAB_PUSH_KEY
+    - git config --global user.name 'inspec-dev Deployer' # Normally this is associated with the $GITLAB_PUSH_KEY
+
+    # add gitlab.mitre.org to known_hosts to avoid "host key verification failed" error
+    - touch ~/.ssh/known_hosts
+    - echo $GITLAB_KEYSCAN >> ~/.ssh/known_hosts
+
+  script:
+    - git clone https://aaronlippold:$(echo $GITHUB_ACCESS_TOKEN)@github.com/aaronlippold/heimdall-lite heimdall-lite >/dev/null 2>/dev/null
+    - cd heimdall-lite
+    - git remote add gitlab git@gitlab.mitre.org:inspec/heimdall-lite.git
+    - ssh-agent sh -c 'ssh-add ~/push_key; git push --tags gitlab master || true' # REMOTE NAME from previous line
+build:
+  stage: build
+  image: alpine:latest
+
+  script:
+    - mkdir -p /var/www/heimdall-lite/
+    - cp heimdallite.html /var/www/heimdall-lite/
