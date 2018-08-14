@@ -7,7 +7,7 @@ set -xe
 
 docker-compose build
 
-./heimdall/gen-secrets.sh
+./gen-heimdall-secrets.sh
 
 docker-compose run heimdall-web rake db:migrate
 
