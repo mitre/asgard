@@ -2,7 +2,9 @@ version: '3.5'
 
 services:
   heimdall-web:
-    build: ./heimdall/dockerfiles/heimdall
+    build:
+      context: heimdall
+      dockerfile: dockerfiles/heimdall/Dockerfile
     volumes:
       - heimdall_secrets:/srv/secrets
     environment:
@@ -13,7 +15,9 @@ services:
       - heimdall-db
 
   heimdall-db:
-    build: ./heimdall/dockerfiles/database
+    build:
+      context: heimdall
+      dockerfile: dockerfiles/heimdall/Dockerfile
     volumes:
       - mongo_data:/data/db
     expose:
@@ -21,7 +25,10 @@ services:
       - 28107
 
   vulcan-web:
-    build: ./vulcan
+    build:
+      context: vulcan
+      dockerfile: Dockerfile
+    command: rails server -p 3030 -b 0.0.0.0
     volumes:
       - sqlite_data:/var/www/vulcan/db-data
     environment:
