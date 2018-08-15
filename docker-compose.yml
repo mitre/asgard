@@ -57,4 +57,5 @@ services:
 volumes:
   mongo_data:
   heimdall_secrets:
+    external: true
   sqlite_data:
