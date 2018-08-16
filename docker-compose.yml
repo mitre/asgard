@@ -13,6 +13,8 @@ services:
       RAILS_RELATIVE_URL_ROOT: /heimdall
     depends_on:
       - heimdall-db
+    links:
+      - heimdall-db:db
 
   heimdall-db:
     build:
