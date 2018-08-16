@@ -2,12 +2,6 @@ FROM ubuntu
 
 RUN apt-get update && apt-get install -y curl software-properties-common wget
 
-RUN curl -o /usr/local/share/ca-certificates/MITRE_BA_Root.crt http://pki.mitre.org/MITRE%20BA%20Root.crt
-RUN curl -o /usr/local/share/ca-certificates/MITRE_BA_NPE_CA-1.crt http://pki.mitre.org/MITRE%20BA%20NPE%20CA-1.crt
-RUN curl -o /usr/local/share/ca-certificates/MITRE_BA_NPE_CA-3.crt http://pki.mitre.org/MITRE%20BA%20NPE%20CA-3.crt
-RUN update-ca-certificates
-RUN echo "Acquire::http::Proxy \"http://gatekeeper.mitre.org:80\";" >> /etc/apt/apt.conf
-
 # Install common applications
 RUN apt-get install -y git
 
