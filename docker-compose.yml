@@ -22,7 +22,7 @@ services:
       - mongo_data:/data/db
     expose:
       - 27017
-      - 28107
+      - 28017
 
   vulcan-web:
     build:
@@ -57,5 +57,4 @@ services:
 volumes:
   mongo_data:
   heimdall_secrets:
-    external: true
   sqlite_data:
