@@ -48,8 +48,6 @@ services:
 
   landing:
     build: ./landing/
-    ports:
-      - 4000:4000
 
   nginx:
     build: ./nginx
