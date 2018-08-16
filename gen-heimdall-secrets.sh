@@ -3,7 +3,7 @@
 [[ "$@" =~ "-h" ]] && cat <<EOF
 $0 [[ --overwrite]]
 
-$0 generates a named volume of super_heimdall_secrets which contains random
+$0 generates a named volume of asgard_heimdall_secrets which contains random
 keys and other initial secrets. The secrets file is left in the config/
 directory for ease of use.
 
@@ -13,13 +13,13 @@ EOF
 [[ "$@" =~ "-h" ]] && exit 0
 
 # Exit if volume exists
-docker inspect super_heimdall_secrets >/dev/null 2>/dev/null \
+docker inspect asgard_heimdall_secrets >/dev/null 2>/dev/null \
 	&& [[ $1 != --overwrite ]] \
 	&& echo -e "Volume which may hold keys exists. Run '$0 --overwrite' to force generation 
 of new keys. This will break any existing Heimdall database containing users." 1>&2 \
 	&& exit 0
-docker volume create super_heimdall_secrets
-docker run -v super_heimdall_secrets:/srv/secrets --name heim_helper busybox true
+docker volume create asgard_heimdall_secrets
+docker run -v asgard_heimdall_secrets:/srv/secrets --name heim_helper busybox true
 
 if [[ ! -a config/secrets.yml ]]
 then
