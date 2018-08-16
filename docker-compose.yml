@@ -17,7 +17,7 @@ services:
   heimdall-db:
     build:
       context: heimdall
-      dockerfile: dockerfiles/heimdall/Dockerfile
+      dockerfile: dockerfiles/database/Dockerfile
     volumes:
       - mongo_data:/data/db
     expose:
