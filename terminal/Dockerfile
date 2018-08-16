@@ -33,4 +33,4 @@ RUN /bin/bash -c "export PATH=$PATH:/usr/lib/go-1.10/bin \
 
 EXPOSE 8080
 
-CMD ["/root/go/bin/gotty", "--permit-write", "--port", "80", "/bin/bash"]
+CMD ["/root/go/bin/gotty", "--permit-write", "/bin/bash"]
