@@ -5,9 +5,9 @@ export VULCAN_SECRET_KEY_BASE=$(openssl rand -hex 64)
 
 set -xe
 
-docker-compose build
-
 ./gen-heimdall-secrets.sh
+
+docker-compose build
 
 docker-compose run heimdall-web rake db:migrate
 
