@@ -5,12 +5,11 @@ RUN apt-get update && apt-get install -y curl software-properties-common wget ta
 # Install common applications
 RUN apt-get install -y git
 
-# Install InSpec
-RUN /bin/bash -c "curl https://omnitruck.chef.io/install.sh | bash -s -- -P inspec"
-
 # Install ChefDK
-RUN /bin/bash -c "wget https://packages.chef.io/files/stable/chefdk/3.1.0/ubuntu/18.04/chefdk_3.1.0-1_amd64.deb"
-RUN /bin/bash -c "dpkg -i chefdk_3.1.0-1_amd64.deb"
+RUN /bin/bash -c "curl -L https://omnitruck.chef.io/install.sh | bash -s -- -P chefdk -c current"
+
+# Install InSpec
+RUN /bin/bash -c "curl -L https://omnitruck.chef.io/install.sh | bash -s -- -P inspec -c current"
 
 RUN /bin/bash -c "curl https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz > go.tar.gz \
     && tar -C /usr/local -xvf go.tar.gz"
