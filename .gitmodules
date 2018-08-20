@@ -1,0 +1,9 @@
+[submodule "heimdall"]
+	path = heimdall
+	url = https://github.com/aaronlippold/heimdall
+[submodule "vulcan"]
+	path = vulcan
+	url = https://github.com/aaronlippold/vulcan
+[submodule "nginx/heimdall-lite"]
+	path = nginx/heimdall-lite
+	url = https://github.com/aaronlippold/heimdall-lite
