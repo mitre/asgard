@@ -4,6 +4,9 @@
 
 Please only run this on localhost.
 
+## Cloning
+Clone with `git clone https://github.com/aaronlippold/asgard --recurse-submodules` to also clone the submodules
+
 ## Running with Docker
 
 ### Building Docker Containers
