@@ -18,7 +18,7 @@ Tags indicate official releases of the project.
 Please note 0.x releases are works in progress (WIP) and may change at any time.   
 
 ## Cloning
-Clone with `git clone https://github.com/aaronlippold/asgard --recurse-submodules` to also clone the submodules
+Clone with `git clone https://github.com/mitre/asgard --recurse-submodules` to also clone the submodules
 
 ## Running with Docker
 
